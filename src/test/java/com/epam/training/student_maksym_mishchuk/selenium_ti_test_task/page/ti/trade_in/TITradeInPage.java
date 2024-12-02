@@ -13,8 +13,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class TITradeInPage extends AbstractPage {
-    private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-    private String devicePattern = "//div[contains(@class, '%s')]/descendant::div[@class='trade-in-change-category']/ul/li/a[text()='%s']";
+    private final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    private final String devicePattern = "//div[contains(@class, '%s')]/descendant::div[@class='trade-in-change-category']/ul/li/a[text()='%s']";
 
     public TITradeInPage(WebDriver driver) {
         super(driver);
