@@ -3,10 +3,12 @@ package com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.ProductItem;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.ti.TIMainPage;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.WebDriverProvider;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.util.converter.CSVRawDataToPairFilters;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
@@ -19,11 +21,10 @@ public class TISearchAndFilterTest {
         driver = WebDriverProvider.getDriver();
     }
 
-    @Test
-    void testCatalogAndSorting() {
-        String search = "Нувбук";
-        int from = 38620;
-        int to = 59999;
+    @ParameterizedTest
+    @CsvFileSource(resources = "/search_and_filter/data.csv")
+    void testCatalogAndSorting(String search, int from, int to, String filtersRawData) {
+        var filters = CSVRawDataToPairFilters.convert(filtersRawData, ";");
 
         var searchBarResults = new TIMainPage(driver)
                 .openPage()
@@ -36,11 +37,15 @@ public class TISearchAndFilterTest {
                 "Search results do not contain the expected category 'Ноутбуки'. Found categories: " + popularResults
         );
 
-        List<ProductItem> result = searchBarResults
-                .goToThePopularCategory("Ноутбуки")
-                .applyFilter("У категоріях", "Ноутбуки")
-                .applyFilter("Бренд", "Acer")
-//                .setPriceRange(from, to)
+        var itemPage = searchBarResults
+                .goToThePopularCategory("Ноутбуки");
+
+        for (CSVRawDataToPairFilters.Pair filter : filters) {
+            itemPage = itemPage
+                    .applyFilter(filter.section(), filter.filter());
+        }
+
+        List<ProductItem> result = itemPage
                 .getProductItems();
 
         Assertions.assertEquals(

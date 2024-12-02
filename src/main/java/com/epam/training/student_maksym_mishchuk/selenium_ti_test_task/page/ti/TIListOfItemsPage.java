@@ -36,9 +36,11 @@ public class TIListOfItemsPage extends AbstractPage {
     @FindBy(className = "max-price")
     private WebElement maxPrice;
 
+    @FindBy(css = "div.filter-box")
+    private List<WebElement> filterBoxes;
+
     private final String productItemsXPath = "//div[contains(@class, 'catalog-list')]/div[@class='product-item']";
     private final String productItemByIndexPattern = "//div[contains(@class, 'catalog-list')]/div[@class='product-item'][%d]";
-    private final String filterItemPattern = "//div[@class='filter-box__title' and text()='%s']/following-sibling::div[contains(@class, 'filter-box__container')]/descendant::span[text()='%s']";
 
     private final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -74,7 +76,7 @@ public class TIListOfItemsPage extends AbstractPage {
 
     @SneakyThrows
     public List<ProductItem> getProductItems() {
-        Thread.sleep(1000);
+        Thread.sleep(500);
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(productItemsXPath))).stream()
                 .map(this::webElementToProductItem)
                 .toList();
@@ -94,9 +96,13 @@ public class TIListOfItemsPage extends AbstractPage {
     }
 
     public TIListOfItemsPage applyFilter(String section, String filter) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
-                filterItemPattern.formatted(section, filter)
-        ))).click();
+        filterBoxes.stream()
+                .filter(element -> element
+                        .findElement(By.className("filter-box__title")).getText()
+                        .trim().equalsIgnoreCase(section))
+                .flatMap(element -> element.findElements(By.className("input-checkbox")).stream())
+                .filter(element -> element.getText().trim().contains(filter))
+                .forEach(element -> wait.until(ExpectedConditions.elementToBeClickable(element)).click());
         return this;
     }
 
