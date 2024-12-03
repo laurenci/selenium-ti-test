@@ -4,11 +4,15 @@ import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.Abst
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public abstract class TITradeInDeviceForm extends AbstractInnerPage {
-    protected WebElement form;
+    private final WebElement form;
+
+    private final Actions actions = new Actions(driver);
 
     private final List<WebElement> selectInputs;
 
@@ -21,22 +25,14 @@ public abstract class TITradeInDeviceForm extends AbstractInnerPage {
         this.selectInputs = form.findElements(By.cssSelector("div.select-input-holder"));
     }
 
-    public TITradeInDeviceForm setValueStrict(String label, String value) {
+    public TITradeInDeviceForm setValue(String label, String value, BiPredicate<WebElement, String> predicate) {
         selectInputs.stream()
                 .filter(element -> element.getText().trim().equals(label))
+                .peek(element -> actions.scrollToElement(element).perform())
                 .peek(WebElement::click)
                 .flatMap(element -> element.findElements(By.cssSelector("div.select-input-dropdown div")).stream())
-                .filter(element -> element.getText().trim().equals(value))
-                .forEach(WebElement::click);
-        return this;
-    }
-
-    public TITradeInDeviceForm setValueSoft(String label, String value) {
-        selectInputs.stream()
-                .filter(element -> element.getText().trim().equals(label))
-                .peek(WebElement::click)
-                .flatMap(element -> element.findElements(By.cssSelector("div.select-input-dropdown div")).stream())
-                .filter(element -> element.getText().trim().contains(value))
+                .filter(element -> predicate.test(element, value))
+                .peek(element -> actions.scrollToElement(element).perform())
                 .forEach(WebElement::click);
         return this;
     }

@@ -12,6 +12,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public class TITradeInPage extends AbstractPage {
     @FindBy(xpath = "//div[contains(@class, 'trade-in-holder change')]/descendant::li[contains(@class, 'change-category__item')]")
@@ -19,6 +20,9 @@ public class TITradeInPage extends AbstractPage {
 
     @FindBy(xpath = "//div[contains(@class, 'trade-in-holder buy')]/descendant::li[contains(@class, 'change-category__item')]")
     private List<WebElement> buyCategoryItems;
+
+    private final BiPredicate<WebElement, String> strictPredicate = (element, value) -> element.getText().trim().equals(value);
+    private final BiPredicate<WebElement, String> softPredicate = (element, value) -> element.getText().trim().contains(value);
 
     public TITradeInPage(WebDriver driver) {
         super(driver);
@@ -35,19 +39,18 @@ public class TITradeInPage extends AbstractPage {
         setChangeCategoryItem(changeCategoryItems,"iPhone Б/У");
 
         new TiTradeInMyDeviceForm(driver)
-                .setValueStrict("Модель", iPhone.model())
-                .setValueStrict("Вбудована пам'ять", iPhone.memory())
-                .setValueSoft("Колір", iPhone.color());
+                .setValue("Модель", iPhone.model(), strictPredicate)
+                .setValue("Вбудована пам'ять", iPhone.memory(), strictPredicate)
+                .setValue("Колір", iPhone.color(), softPredicate);
         return this;
     }
 
     public TITradeInPage setNewIPhone(iPhone iPhone) {
         setChangeCategoryItem(buyCategoryItems, "Смартфони iPhone");
-
         new TITradeInNewDeviceForm(driver)
-                .setValueStrict("Модель", iPhone.model())
-                .setValueStrict("Вбудована пам'ять", iPhone.memory())
-                .setValueSoft("Колір", iPhone.color());
+                .setValue("Модель", iPhone.model(), strictPredicate)
+                .setValue("Вбудована пам'ять", iPhone.memory(), strictPredicate)
+                .setValue("Колір", iPhone.color(), softPredicate);
         return this;
     }
 
