@@ -6,10 +6,7 @@ import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.Visi
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.util.converter.CurrencyStringToIntegerConverter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.SystemUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -67,19 +64,22 @@ public class TIListOfItemsPage extends AbstractPage {
     }
 
     public ProductItem getProductItemByIndex(int index) {
-        return webElementToProductItem(
-                wait.until(ExpectedConditions.elementToBeClickable(
-                        By.xpath(productItemByIndexPattern.formatted(index))
-                ))
-        );
+        return wait.ignoring(StaleElementReferenceException.class)
+                .until(
+                        driver -> webElementToProductItem(
+                                driver.findElement(By.xpath(productItemByIndexPattern.formatted(index))
+                                ))
+                );
     }
 
-    @SneakyThrows
     public List<ProductItem> getProductItems() {
-        Thread.sleep(500);
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(productItemsXPath))).stream()
-                .map(this::webElementToProductItem)
-                .toList();
+        return wait
+                .ignoring(StaleElementReferenceException.class)
+                .until(
+                        driver -> driver.findElements(By.xpath(productItemsXPath)).stream()
+                                .map(this::webElementToProductItem)
+                                .toList()
+                );
     }
 
     private ProductItem webElementToProductItem(WebElement element) {
