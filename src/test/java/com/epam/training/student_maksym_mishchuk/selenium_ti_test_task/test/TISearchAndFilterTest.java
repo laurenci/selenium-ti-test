@@ -23,22 +23,22 @@ public class TISearchAndFilterTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/search_and_filter/data.csv")
-    void testCatalogAndSorting(String search, int from, int to, String filtersRawData) {
+    void testCatalogAndSorting(String searchData, String expectedCategory, String filtersRawData, int from, int to) {
         var filters = CSVRawDataToPairFilters.convert(filtersRawData, ";");
 
         var searchBarResults = new TIMainPage(driver)
                 .openPage()
-                .search(search);
+                .search(searchData);
 
         List<String> popularResults = searchBarResults.getPublicCategoryNames();
 
         Assertions.assertTrue(
-                popularResults.contains("Ноутбуки"),
+                popularResults.contains(expectedCategory),
                 "Search results do not contain the expected category 'Ноутбуки'. Found categories: " + popularResults
         );
 
         var itemPage = searchBarResults
-                .goToThePopularCategory("Ноутбуки");
+                .goToThePopularCategory(expectedCategory);
 
         for (CSVRawDataToPairFilters.Pair filter : filters) {
             itemPage = itemPage
@@ -59,6 +59,6 @@ public class TISearchAndFilterTest {
 
     @AfterEach
     public void tearDown() {
-        driver.quit();
+        WebDriverProvider.quitDriver();
     }
 }

@@ -38,6 +38,6 @@ public class TITradeInTest {
     }
     @AfterEach
     public void tearDown() {
-        driver.quit();
+        WebDriverProvider.quitDriver();
     }
 }

@@ -43,6 +43,6 @@ public class TICatalogAndSortingTest {
 
     @AfterEach
     public void tearDown() {
-        driver.quit();
+        WebDriverProvider.quitDriver();
     }
 }
