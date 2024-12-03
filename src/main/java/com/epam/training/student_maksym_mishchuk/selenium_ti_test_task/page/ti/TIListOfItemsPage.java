@@ -4,7 +4,6 @@ import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.Pro
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.AbstractPage;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.VisibleAjaxElementLocatorFactory;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.util.converter.CurrencyStringToIntegerConverter;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
@@ -106,7 +105,6 @@ public class TIListOfItemsPage extends AbstractPage {
         return this;
     }
 
-    @SneakyThrows
     public TIListOfItemsPage setPriceRange(int from, int to) {
         wait.withTimeout(Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(minPrice));
@@ -116,7 +114,6 @@ public class TIListOfItemsPage extends AbstractPage {
         clearInput(maxPrice);
         maxPrice.sendKeys(Integer.toString(to));
 
-        Thread.sleep(5000);
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='price-thump-2']"))).click();
 
         return this;

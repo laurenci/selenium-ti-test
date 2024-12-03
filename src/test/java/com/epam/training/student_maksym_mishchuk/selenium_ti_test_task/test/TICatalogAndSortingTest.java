@@ -3,7 +3,6 @@ package com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.ProductItem;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.ti.TIMainPage;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.WebDriverProvider;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,6 @@ public class TICatalogAndSortingTest {
         driver = WebDriverProvider.getDriver();
     }
 
-    @SneakyThrows
     @Test
     void testCatalogAndSorting() {
         var acousticPage = new TIMainPage(driver)
@@ -31,8 +29,6 @@ public class TICatalogAndSortingTest {
         ProductItem lowestPriceProductItem = acousticPage.getProductItemByIndex(1);
 
         acousticPage = acousticPage.sortByPriceDescending();
-
-        Thread.sleep(500);
 
         ProductItem highestPriceProductItem = acousticPage.getProductItemByIndex(1);
 
