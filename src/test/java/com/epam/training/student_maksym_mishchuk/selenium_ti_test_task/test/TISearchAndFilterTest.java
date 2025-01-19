@@ -2,27 +2,29 @@ package com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test;
 
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.ProductItem;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.ti.TIMainPage;
-import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.WebDriverProvider;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test.provider.CSVArgumentsProvider;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test.watcher.WebDriverExtension;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.util.converter.CSVRawDataToPairFilters;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
 
+@ExtendWith(WebDriverExtension.class)
 public class TISearchAndFilterTest {
-    private WebDriver driver;
+    WebDriver driver;
 
-    @BeforeEach
-    public void setUp() {
-        driver = WebDriverProvider.getDriver();
+    public TISearchAndFilterTest(WebDriver driver) {
+        this.driver = driver;
     }
 
+    @Disabled
     @ParameterizedTest
-    @CsvFileSource(resources = "/search_and_filter/data.csv")
+    @ArgumentsSource(CSVArgumentsProvider.class)
     void testCatalogAndSorting(String searchData, String expectedCategory, String filtersRawData, int from, int to) {
         var filters = CSVRawDataToPairFilters.convert(filtersRawData, ";");
 
@@ -55,10 +57,5 @@ public class TISearchAndFilterTest {
                 .count(),
                 "Some products have prices outside the expected range (" + from + " to " + to + ")."
         );
-    }
-
-    @AfterEach
-    public void tearDown() {
-        WebDriverProvider.quitDriver();
     }
 }

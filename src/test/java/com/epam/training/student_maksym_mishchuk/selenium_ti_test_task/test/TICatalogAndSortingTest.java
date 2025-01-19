@@ -2,19 +2,18 @@ package com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test;
 
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.ProductItem;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.ti.TIMainPage;
-import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.WebDriverProvider;
-import org.junit.jupiter.api.AfterEach;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test.watcher.WebDriverExtension;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 
+@ExtendWith(WebDriverExtension.class)
 public class TICatalogAndSortingTest {
-    private WebDriver driver;
+    WebDriver driver;
 
-    @BeforeEach
-    public void setUp() {
-        driver = WebDriverProvider.getDriver();
+    public TICatalogAndSortingTest(WebDriver driver) {
+        this.driver = driver;
     }
 
     @Test
@@ -35,10 +34,5 @@ public class TICatalogAndSortingTest {
         Assertions.assertTrue(lowestPriceProductItem.price() <= highestPriceProductItem.price(),
                 "Sorting verification failed: The lowest price product (" + lowestPriceProductItem.price() +
                 ") is greater than the highest price product (" + highestPriceProductItem.price() + ").");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        WebDriverProvider.quitDriver();
     }
 }

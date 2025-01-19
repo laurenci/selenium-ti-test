@@ -2,24 +2,25 @@ package com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test;
 
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.model.iPhone;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.page.ti.trade_in.TITradeInPage;
-import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.tool.WebDriverProvider;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test.provider.CSVArgumentsProvider;
+import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.test.watcher.WebDriverExtension;
 import com.epam.training.student_maksym_mishchuk.selenium_ti_test_task.util.converter.CSVRawDataToIPhoneConverter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.openqa.selenium.WebDriver;
 
+@ExtendWith(WebDriverExtension.class)
 public class TITradeInTest {
-    private WebDriver driver;
-    @BeforeEach
-    public void setUp() {
-        driver = WebDriverProvider.getDriver();
+    WebDriver driver;
+
+    public TITradeInTest(WebDriver driver) {
+        this.driver = driver;
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/trade-in/iPhoneToiPhone.csv")
+    @ArgumentsSource(CSVArgumentsProvider.class)
     void testIPhoneToIPhoneTradeIn(String myIPhoneRawData, String newIphoneRawData) {
         iPhone myIPhone = CSVRawDataToIPhoneConverter.convert(myIPhoneRawData);
         iPhone newIPhone = CSVRawDataToIPhoneConverter.convert(newIphoneRawData);
@@ -35,9 +36,5 @@ public class TITradeInTest {
                 results.getDiscountedDevicePrice(),
                 "Discounted device price is not calculated correctly"
         );
-    }
-    @AfterEach
-    public void tearDown() {
-        WebDriverProvider.quitDriver();
     }
 }

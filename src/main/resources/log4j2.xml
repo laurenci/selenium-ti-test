@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Properties>
+        <Property name="logging.fileName" value="${date:dd-MM-yyyy}.log" />
+    </Properties>
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="[%p] %d %c{2} [%t] %l %m%n"/>
+        </Console>
+        <RollingFile name="File" filePattern="target/logs/${logging.fileName}">
+            <PatternLayout pattern="[%p] %d %c{2} [%t] %l %m%n"/>
+            <Policies>
+                <CronTriggeringPolicy schedule="0 0 0 * * ?" />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="info"/>
+            <AppenderRef ref="File" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>

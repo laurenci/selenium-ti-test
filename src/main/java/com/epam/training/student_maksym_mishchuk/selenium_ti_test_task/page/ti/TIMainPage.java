@@ -33,6 +33,7 @@ public class TIMainPage extends AbstractPage {
     }
 
     public TISearchBar search(String text) {
+        search.click();
         search.sendKeys(text);
         return new TISearchBar(driver);
     }
